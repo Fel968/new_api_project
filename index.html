@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NASA Picture of the Day App</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+
     <style>
         /* General body styling */
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
             color: white;
             background-color: black;
+
+
+            font-family: "Nanum Gothic", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+
         }
 
         /* Landing page styling */
@@ -44,6 +57,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            /* font-weight: lighter; */
         }
 
         /* Text and button styling */
@@ -73,8 +87,8 @@
 
         /* Arrows styling */
         .arrow {
-            position: absolute;
-            top: 20px;
+            /* position: absolute;
+            top: 20px; */
             font-size: 36px;
             cursor: pointer;
             padding: 10px;
@@ -106,6 +120,16 @@
             margin-top: 20px;
         }
 
+        #apod-description{
+            font-size: 1rem;
+            max-width: 80%;
+            line-height: 1.5;
+            text-align: justify;
+            padding-left: 10%;
+            padding-right: 10%;
+
+        }
+
         /* Custom search bar */
         .search-bar {
             position: relative;
@@ -119,14 +143,14 @@
             padding: 10px 20px;
             font-size: 18px;
             border-radius: 30px;
-            border: 1px solid white;
+            border: 2px solid white;
             background-color: transparent;
             color: white;
             width: 100%;
-            margin-top: 80px;
+            /* margin-top: 20px; */
             position: relative;
             left: -30px;
-             /* Leave space for the search icon */
+            /* Leave space for the search icon */
         }
 
         /* Hide the native date picker icon */
@@ -154,16 +178,21 @@
         /* Search icon using Unicode */
         .search-icon {
             position: absolute;
-            top: 80%;
+            top: 60%;
             right: 15px;
             transform: translateY(-50%);
             font-size: 24px;
             color: white;
-            cursor: pointer; 
+            cursor: pointer;
+            /* opacity: 0.8; */
         }
 
+        #search-date{
+            opacity: 0.5;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Landing Page -->
@@ -176,9 +205,9 @@
         </video>
         <div class="overlay">
             <div>
-                <h1>Welcome to a World of Cosmic Wonders</h1>
-                <p>Let's explore deeper into the mysteries of the cosmos and witness the breathtaking beauty of the universe every day.</p>
-                <button class="explore-button" onclick="goToExplore()">Explore</button>
+                <h1>Your World of Cosmic Wonders</h1>
+                <p>Find up-to-date pictures of space here</p>
+                <button class="explore-button" onclick="goToExplore()">See picture of the day</button>
             </div>
         </div>
     </div>
@@ -186,17 +215,23 @@
     <!-- Explore Page (hidden initially) -->
     <div class="explore-container" id="explore-page" style="display:none;">
         <!-- Back arrow to go back to the Landing page -->
-        <span class="arrow arrow-left" onclick="goBack()">&#x2190;</span>
+        <h2>Astronomy Picture of the Day</h2>
+
         <div class="search-bar">
             <input type="date" id="search-date" />
             <!-- Clickable search icon -->
-            <span class="search-icon" onclick="fetchAPOD()">&#x1F50D;</span> <!-- Unicode for search icon -->
+            <span class="search-icon" onclick="fetchAPOD()">
+               <img src="./images/search (1).png" alt="search icon"> 
+            </span> <!-- Unicode for search icon -->
         </div>
+
         <div id="apod-content">
-            <h2>Astronomy Picture of the Day</h2>
             <img id="apod-image" class="apod-image" src="" alt="Astronomy Picture of the Day" />
             <p id="apod-description"></p>
         </div>
+
+        <span class="arrow arrow-left" onclick="goBack()">&#x2190;</span>
+
     </div>
 
     <script>
@@ -234,4 +269,5 @@
         }
     </script>
 </body>
+
 </html>
