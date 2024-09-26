@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Picture of the Day App</title>
+    <style>
+        /* General body styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: black;
+        }
+
+        /* Landing page styling */
+        .landing-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Overlay to darken the background */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Text and button styling */
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .explore-button {
+            padding: 15px 30px;
+            border: 2px solid white;
+            color: white;
+            background-color: transparent;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .explore-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Arrows styling */
+        .arrow {
+            position: absolute;
+            top: 20px;
+            font-size: 36px;
+            cursor: pointer;
+            padding: 10px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .arrow:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .arrow-right {
+            right: 20px;
+        }
+
+        .arrow-left {
+            left: 20px;
+        }
+
+        /* Explore page container */
+        .explore-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .apod-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        /* Custom search bar */
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+            display: inline-block;
+            width: 250px;
+        }
+
+        /* Styling the input type date */
+        .search-bar input[type="date"] {
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 30px;
+            border: 1px solid white;
+            background-color: transparent;
+            color: white;
+            width: 100%;
+            margin-top: 80px;
+            position: relative;
+            left: -30px;
+             /* Leave space for the search icon */
+        }
+
+        /* Hide the native date picker icon */
+        .search-bar input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+        }
+
+        /* Placeholder behavior */
+        .search-bar input[type="date"]::before {
+            content: 'Search by date';
+            color: rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+        }
+
+        /* Show the placeholder when no value is selected */
+        .search-bar input[type="date"]:not(:focus):invalid::before {
+            display: block;
+        }
+
+        .search-bar input[type="date"]:focus::before,
+        .search-bar input[type="date"]:valid::before {
+            display: none;
+        }
+
+        /* Search icon using Unicode */
+        .search-icon {
+            position: absolute;
+            top: 80%;
+            right: 15px;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: white;
+            cursor: pointer; 
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page -->
+    <div class="landing-container">
+        <!-- Forward arrow to go to Explore page -->
+        <span class="arrow arrow-right" onclick="goToExplore()">&#x2192;</span>
+        <video class="background-video" autoplay muted loop playsinline>
+            <source src="images/new.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="overlay">
+            <div>
+                <h1>Welcome to a World of Cosmic Wonders</h1>
+                <p>Let's explore deeper into the mysteries of the cosmos and witness the breathtaking beauty of the universe every day.</p>
+                <button class="explore-button" onclick="goToExplore()">Explore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explore Page (hidden initially) -->
+    <div class="explore-container" id="explore-page" style="display:none;">
+        <!-- Back arrow to go back to the Landing page -->
+        <span class="arrow arrow-left" onclick="goBack()">&#x2190;</span>
+        <div class="search-bar">
+            <input type="date" id="search-date" />
+            <!-- Clickable search icon -->
+            <span class="search-icon" onclick="fetchAPOD()">&#x1F50D;</span> <!-- Unicode for search icon -->
+        </div>
+        <div id="apod-content">
+            <h2>Astronomy Picture of the Day</h2>
+            <img id="apod-image" class="apod-image" src="" alt="Astronomy Picture of the Day" />
+            <p id="apod-description"></p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'lH4OrzfPjhsSOmY2TpRkuPHtE6Y56xQvdS7bUu8i'; // NASA API key
+
+        // Function to switch to the explore page
+        function goToExplore() {
+            document.querySelector('.landing-container').style.display = 'none';
+            document.getElementById('explore-page').style.display = 'block';
+            fetchAPOD(); // Fetch the APOD on initial load
+        }
+
+        // Function to go back to the landing page
+        function goBack() {
+            document.querySelector('.landing-container').style.display = 'block';
+            document.getElementById('explore-page').style.display = 'none';
+        }
+
+        // Function to fetch APOD based on the selected date or default to today
+        function fetchAPOD() {
+            const selectedDate = document.getElementById('search-date').value;
+            let apiUrl = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`;
+
+            if (selectedDate) {
+                apiUrl += `&date=${selectedDate}`;
+            }
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('apod-image').src = data.url;
+                    document.getElementById('apod-description').textContent = data.explanation;
+                })
+                .catch(error => console.log('Error fetching APOD:', error));
+        }
+    </script>
+</body>
+</html>
